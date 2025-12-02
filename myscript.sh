@@ -1,1 +1,45 @@
+#ifndef STDIO
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#define STDIO
+//#define FICHIER "c-wildwater_v0(1).dat"
+#endif
 
+char* getlinetype(char string[]){
+	int pos = 0;
+	char aswer[200];
+	int valsvide[5];
+	
+	for (int i = 0; i <= 5;i++){
+		if (string[pos] == '-'){
+			valsvide[i] = 1;
+		}
+		else{
+			valsvide[i] = 0;
+		}
+		if (string[pos] == '\n' || string[pos] == '\0'){
+			i = 6;
+		}
+		while(string[pos] != ';'){
+			pos++;
+		}
+		pos++;
+		printf("%d",valsvide[i]);
+	}
+	if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 0
+	&& valsvide[3] == 0 && valsvide[4] == 0){
+		return "source";
+	}
+	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 1
+	&& valsvide[3] == 0 && valsvide[4] == 1){
+		return "usine";
+	}
+	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 0
+	&& valsvide[3] == 1 && valsvide[4] == 0){
+		return "stockage";
+	}
+	else {
+		return "distribution";
+	}
+}
