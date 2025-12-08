@@ -6,6 +6,29 @@
 //#define FICHIER "c-wildwater_v0(1).dat"
 #endif
 
+
+
+typedef struct _plant{
+	char id[20];
+	int max_cap;
+	int col_vol;
+	int pro_vol;
+}Plant;
+
+typedef struct _avl_pla{
+	Plant* current;
+	Plant* ls;
+	Plant* rs;
+}
+
+Plant* createPlant(char string[]){
+	Plant* new = malloc(sizeof(Plant));
+	if (Plant == NULL){
+		exit(1);
+	}
+	
+}
+
 char* getlinetype(char string[]){
 	int pos = 0;
 	char aswer[200];
@@ -43,3 +66,4 @@ char* getlinetype(char string[]){
 		return "distribution";
 	}
 }
+
