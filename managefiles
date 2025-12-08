@@ -9,24 +9,61 @@
 
 
 typedef struct _plant{
-	char id[20];
+	char id[40];
 	int max_cap;
 	int col_vol;
 	int pro_vol;
 }Plant;
 
-typedef struct _avl_pla{
+typedef struct _avl_plant{
 	Plant* current;
 	Plant* ls;
 	Plant* rs;
+}Avl_Plant;
+
+void stringtotable(char source[],char destiny[],int size){
+	int pos = 0;
+	while(source[pos] != '\n' && source[pos] != '\0' && pos < size){
+		destiny[pos] = source[pos];
+	}	
 }
 
 Plant* createPlant(char string[]){
-	Plant* new = malloc(sizeof(Plant));
-	if (Plant == NULL){
+	Plant* newone = malloc(sizeof(Plant));
+	if (newone == NULL){
 		exit(1);
 	}
-	
+	int pos = 0;
+	char cap[40];
+	for (int i = 0; i <= 5;i++){
+		if (i == 1){
+		int j = 0;
+			while(string[pos] != ';' && string[pos] != '\n' && string[pos] != '\0'){
+					newone->id[j] = string[pos];
+					printf("%c",string[pos]);
+					j++;
+					pos++;
+			}
+			printf("\n%s\n",newone->id);
+		}
+		else if (i == 3){
+			int j = 0;
+			while(string[pos] != ';' && string[pos] != '\n' && string[pos] != '\0'){
+						cap[j] = string[pos];
+						j++;
+						pos++;
+				}
+			newone->max_cap = atoi(cap);
+			printf("%d", newone->max_cap);
+		}
+		if (string[pos] == '\n' || string[pos] == '\0'){
+			i = 6;
+		}
+		while(string[pos] != ';'){
+			pos++;
+		}
+		pos++;
+	}
 }
 
 char* getlinetype(char string[]){
@@ -56,6 +93,7 @@ char* getlinetype(char string[]){
 	}
 	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 1
 	&& valsvide[3] == 0 && valsvide[4] == 1){
+		createPlant(string);
 		return "usine";
 	}
 	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 0
