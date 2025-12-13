@@ -1,0 +1,9 @@
+*.o
+c-wildwater
+tmp/
+tests/
+data/*.dat
+data/*.csv
+*.dat
+*.csv
+.DS_Store
