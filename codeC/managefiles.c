@@ -6,7 +6,10 @@
 //#define FICHIER "c-wildwater_v0(1).dat"
 #endif
 
-
+/* To Do: 
+Dynamic tab to store plants in alphabetic order
+Functions to browse the file and set the plant's collected volume and processed volume
+Create Plant's Avl about collected volume, processed volume and capacity*/
 
 typedef struct _plant{
 	char id[40];
