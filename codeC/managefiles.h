@@ -2,14 +2,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
+#include<string.h>
 #define STDIO
 //#define FICHIER "c-wildwater_v0(1).dat"
 #endif
 
 /* To Do: 
-Avl plants in id "alphabetic" order
+Balance the Avl tree when inserting plants
 Functions to browse the file and set the plant's collected volume and processed volume
-Create Plant's Avl about collected volume, processed volume and capacity*/
+*/
 
 typedef struct _plant{
 	char id[40];
@@ -20,8 +21,9 @@ typedef struct _plant{
 
 typedef struct _avl_plant{
 	Plant* current;
-	Plant* ls;
-	Plant* rs;
+	struct _avl_plant* ls;
+	struct _avl_plant* rs;
+	int balance;
 }Avl_Plant;
 
 typedef struct _linked_plant{
@@ -29,8 +31,20 @@ typedef struct _linked_plant{
 	struct _linked_plant* next;
 }Linked_Plant;
 
+Avl_Plant* createAvlPlant(Plant* plant){
+	Avl_Plant* newone = malloc (sizeof(Avl_Plant));
+	if (newone == NULL){
+		exit(1);
+	}
+	newone->current = plant;
+	newone->ls = NULL;
+	newone->rs = NULL;
+	newone->balance = 0;
+	return newone;
+}
+
 int beforeinorderid(char str1[], char str2[]){
-	int pos1,pos2 = 0;
+	int pos1 = 0,pos2 = 0;
 	int difference = 0;
 	while(str1[pos1] != '#'){
 		pos1++;
@@ -68,6 +82,7 @@ int beforeinorderid(char str1[], char str2[]){
 	}*/
 }
 
+
 void stringtotable(char source[],char destiny[],int size){
 	int pos = 0;
 	while(source[pos] != '\n' && source[pos] != '\0' && pos < size){
@@ -91,7 +106,6 @@ Plant* createPlant(char string[]){
 					j++;
 					pos++;
 			}
-			printf("\n%s\n",newone->id);
 		}
 		else if (i == 3){
 			int j = 0;
@@ -101,7 +115,6 @@ Plant* createPlant(char string[]){
 						pos++;
 				}
 			newone->max_cap = atoi(cap);
-			//printf("%d", newone->max_cap);
 		}
 		if (string[pos] == '\n' || string[pos] == '\0'){
 			i = 6;
@@ -111,6 +124,7 @@ Plant* createPlant(char string[]){
 		}
 		pos++;
 	}
+	return newone;
 }
 
 char* getlinetype(char string[]){
@@ -139,7 +153,7 @@ char* getlinetype(char string[]){
 	}
 	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 1
 	&& valsvide[3] == 0 && valsvide[4] == 1){
-		createPlant(string);
+		//createPlant(string);
 		return "usine";
 	}
 	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 0
@@ -151,3 +165,76 @@ char* getlinetype(char string[]){
 	}
 }
 
+
+Avl_Plant* insertAvlPlant(Avl_Plant* root, Plant* plant){
+	if (root == NULL){
+		return createAvlPlant(plant);
+	}
+	else{
+		if (beforeinorderid(plant->id,root->current->id) == 1){
+			root->ls = insertAvlPlant(root->ls,plant);
+		}
+		else{
+			root->rs = insertAvlPlant(root->rs,plant);
+		}
+	}
+	return root;
+}
+
+Avl_Plant* searchAvlPlantById(Avl_Plant* root, char id[]){
+	if (root == NULL){
+		return NULL;
+	}
+	else{
+		if (strcmp(root->current->id,id) == 0){
+			return root;
+		}
+		else{
+			if (beforeinorderid(id,root->current->id) == 1){
+				return searchAvlPlantById(root->ls,id);
+			}
+			else{
+				return searchAvlPlantById(root->rs,id);
+			}
+		}
+	}
+}
+
+Avl_Plant* getAllPlantsFromFile(FILE* file){
+	Avl_Plant* root = NULL;
+	int count[5] = {0,0,0,0,0};
+	if (file == NULL){
+		return NULL;
+	}
+	else{
+		char* phrase = malloc(sizeof(char)*200);
+		while (feof(file) == 0)
+		{
+			fgets(phrase,199,file);
+			//printf(" %s ",phrase);
+			char type[20];
+			strcpy(type,getlinetype(phrase));
+			if (strcmp(type,"usine") == 0){
+				//printf("usine detectee\n");
+				Plant* plant = createPlant(phrase);
+				root = insertAvlPlant(root,plant);
+				count[1]++;
+			}
+			if (strcmp(type,"source") == 0){
+				count[0]++;
+			}
+			if (strcmp(type,"stockage") == 0){
+				count[2]++;
+			}
+			if (strcmp(type,"distribution") == 0){
+				count[3]++;
+			}
+			
+		}
+		free(phrase);
+		for (int i = 0; i < 5; i++){
+				printf("type: %d , %d\n",i,count[i]);
+			}
+	}
+	return root;
+}
