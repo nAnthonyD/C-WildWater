@@ -26,6 +26,6 @@ int main(){
 	clock_t end = clock();
 	time_spent = (double)(end - start) / CLOCKS_PER_SEC;
 	printf("Time spent: %f seconds\n",time_spent);
-	printf("Leakage rate: %f\n",leakage("Plant #KU000032A",fichier,allplants));
+	printf("Leakage rate: %f\n",leakage("Unit #NY000804Z",fichier,allplants));
 	return 0;
 }

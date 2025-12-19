@@ -130,8 +130,8 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 						col_vol = atof(colons[3])/1000;
 						leakage_rate = (atof(colons[4])/100);
 						proc_vol = col_vol * (1 - leakage_rate);
-						searchedplant->current->col_vol = col_vol;
-						searchedplant->current->pro_vol = proc_vol;
+						searchedplant->current->col_vol += col_vol;
+						searchedplant->current->pro_vol += proc_vol;
 					}
 				}
 			}
@@ -142,7 +142,7 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 
 		}
 		free(phrase);
-		Avl_Plant* test = searchAvlPlantById(root,"Unit #MO000769V");
+		Avl_Plant* test = searchAvlPlantById(root,"Module #OS101217V");
 		if (test != NULL){
 			printf("Max Volume: %f, Collected volume: %f, Processed volume: %f\n",test->current->max_cap,test->current->col_vol,test->current->pro_vol);
 		}
@@ -180,6 +180,8 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 		float leakage_rate = -1.0;
 		int* heightchanged = malloc(sizeof(int));
 		*heightchanged = 0;
+		float totalleakage = 0;
+		float* ptotalleakage = &totalleakage;
 		if (phrase == NULL || heightchanged == NULL){
 			exit(1);
 		}
@@ -188,57 +190,59 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 			while (fgets(phrase,199,file) != NULL)
 			{
 				colons = getcolons(phrase);
-				char type[20];
-				strcpy(type,getlinetype(phrase));
-				if (strcmp(type,"stockage") == 0){
-					if (beforeinorderid(colons[1],id) == 0){
+				char linetype[20];
+				strcpy(linetype,getlinetype(phrase));
+				if (strcmp(linetype,"stockage") == 0){
+					if (colons[1] != NULL && beforeinorderid(colons[1],id) == 0 && colons[2] != NULL && colons[4] != NULL){
 						storagecurrent = createStorageNode(colons[2],atof(colons[4])/100);
 						planttree = insertPlantTree(planttree,storagecurrent);
 						storageavl = insertAvlStorage(storageavl,storagecurrent,heightchanged);
 						nmb++;
 					}
 				}
-				else if (strcmp(type,"distribution") == 0){
+				else if (strcmp(linetype,"distribution") == 0){
 					if (beforeinorderid(colons[0],id) == 0){
 						distcurrent = createDistributionNode(phrase);
-						if (searchAvlStorageById(storageavl,distcurrent->parentid) != NULL){
-							//linkStorageNode(storageavl->current,distcurrent);
-							printf("Distribution %s linked to storage %s\n",distcurrent->id,distcurrent->parentid);
-						}
-						else{
-							distparent = searchAvlDistributionById(distavl,distcurrent->parentid)->current;
-							if (distparent != NULL){
-								//linkDistNode(distparent->head,distcurrent);
-								tst++;
+						if (distcurrent != NULL && distcurrent->parentid != NULL) {
+							Avl_Storage* avlstoragecurrent = searchAvlStorageById(storageavl,distcurrent->parentid);
+							if (avlstoragecurrent != NULL){
+								storagecurrent = avlstoragecurrent->current;
+								insertInStorageNode(storagecurrent,distcurrent);
+								distavl = insertAvlDistribution(distavl,distcurrent,heightchanged);
 							}
 							else{
-								printf("Parent id %s not found for distribution %s\n",distcurrent->parentid,distcurrent->id);
+								distavl = insertAvlDistribution(distavl,distcurrent,heightchanged);		
+								Avl_Distribution* avldistcurrent = searchAvlDistributionById(distavl,distcurrent->parentid);
+								if (avldistcurrent != NULL){
+									insertInDistributionNode(avldistcurrent->current,distcurrent);
+									tst++;
+								}
+								else{
+								}
 							}
+							nmbr++;
 						}
-						distavl = insertAvlDistribution(distavl,distcurrent,heightchanged);
-					//	printf("hmm\n");
-						
-						nmbr++;
 					}
 				}
-				for(int i=0; i<5; i++){
-					free(colons[i]);
-				}			
-				free(colons);
+				freecolons(colons);
 			}
+			printf("\nt\n");
+			
 			showAvlStorageInorder(storageavl);
+			browseplanttree(planttree,ptotalleakage);
 			printf("%d distributions linked to storages\n",nmb - tst);
 			printf("%d distributions linked to distributions\n",tst);
 			printf("%d storages linked to plant %s\n",nmb,id);
 			printf("%d distributions linked to plant %s\n",nmbr,id);
+			printf("Total leakage for plant %s: %f\n",id,*ptotalleakage);
 		}
 		else{
 			printf("Plant id %s not found in the tree\n",id);
-			return -1;
+			exit(1);
 		}
 		free(phrase);
 		free(heightchanged);
-		return leakage_rate;
+		return *ptotalleakage;
 	}
 }
 

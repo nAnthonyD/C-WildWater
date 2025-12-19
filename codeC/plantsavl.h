@@ -268,6 +268,7 @@ StorageNode* linkStorageNode(StorageNode* head, StorageNode* newone){
 
 DistributionNode* linkDistNode(DistributionNode* head, DistributionNode* newone){
 	if (head == NULL){
+		printf("bad head\n");
 		return newone;
 	}
 	else{
@@ -277,6 +278,27 @@ DistributionNode* linkDistNode(DistributionNode* head, DistributionNode* newone)
 		}
 		current->next = newone;
 		return head;
+	}
+}
+
+StorageNode* insertInStorageNode(StorageNode* root, DistributionNode* distribution){
+	if (root == NULL){
+		exit(1);
+	}
+	else{
+		root->head = linkDistNode(root->head,distribution);
+		return root;
+	}
+}
+
+DistributionNode* insertInDistributionNode(DistributionNode* root, DistributionNode* distribution){
+	if (root == NULL){
+		printf("erro");
+		exit(1);
+	}
+	else{
+		root->head = linkDistNode(root->head,distribution);
+		return root;
 	}
 }
 
@@ -307,5 +329,64 @@ StorageNode* insertStorageNode(StorageNode* root, DistributionNode* distribution
 	else{
 		root->head = linkDistNode(root->head,distribution);
 		return root;
+	}
+}
+
+void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, float flow, int* preapeat){
+	DistributionNode* currentdist = distnode;
+	int sons = 0;
+	float totalflow = 0;
+	while (currentdist != NULL){
+		sons++;
+		currentdist = currentdist->next;
+	}
+	currentdist = distnode;
+	while (currentdist != NULL){
+		(*preapeat)++;
+		totalflow = flow/sons;
+		currentdist->flow = totalflow - (totalflow * currentdist->leakage_rate);
+		currentdist->leaked_volume = totalflow * currentdist->leakage_rate;
+		(*ptotalleakage) += currentdist->leaked_volume;
+		browsedistributiontree(currentdist->head,ptotalleakage, currentdist->flow,preapeat);
+		currentdist = currentdist->next;
+	}
+}
+
+void browsestoragetree(StorageNode* storagenode, float* ptotalleakage){
+    DistributionNode* currentdist = storagenode->head;
+    printf("Storage id: %s , leakage rate: %f\n",storagenode->id,storagenode->leakage_rate);
+	int sons = 0;
+	float totalflow = storagenode->flow;
+	storagenode->leaked_volume = totalflow * storagenode->leakage_rate;
+	(*ptotalleakage) += storagenode->leaked_volume;
+	float realflow = totalflow - storagenode->leaked_volume;
+	while (currentdist != NULL){
+		sons++;
+        currentdist = currentdist->next;
+    }
+	int* preapeat = malloc(sizeof(int));
+	*preapeat = 0;
+	currentdist = storagenode->head;
+	//printf(" Leaked volume at storage %s: %f , total leakage so far: %f, realflow: %f, sons: %d\n",storagenode->id,storagenode->leaked_volume,*ptotalleakage, realflow, sons);
+	browsedistributiontree(currentdist,ptotalleakage,realflow,preapeat);
+	printf("\n%d\n",*preapeat);
+	free(preapeat);
+}
+
+void browseplanttree(PlantTree* planttree, float* ptotalleakage){
+	StorageNode* currentstorage = planttree->head;
+	*ptotalleakage = 0;
+	int sons = 0;
+	while (currentstorage != NULL){
+		sons++;
+		currentstorage = currentstorage->next;
+	}
+	printf("Plant pro_vol: %f, number of storages: %d\n", planttree->root->pro_vol, sons);
+	currentstorage = planttree->head;
+	while (currentstorage != NULL){
+		currentstorage->flow = planttree->root->pro_vol / sons;
+		printf("Storage %s gets flow: %f\n", currentstorage->id, currentstorage->flow);
+		browsestoragetree(currentstorage,ptotalleakage);
+		currentstorage = currentstorage->next;
 	}
 }

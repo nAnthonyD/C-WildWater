@@ -18,6 +18,8 @@ typedef struct _distribution_node{
 	char id[40];
     char parentid[40];
 	float leakage_rate;
+	float flow;
+	float leaked_volume;
     struct _distribution_node* head;
 	struct _distribution_node* next;
 }DistributionNode;
@@ -25,6 +27,8 @@ typedef struct _distribution_node{
 typedef struct _storage_node{
 	char id[40];
 	float leakage_rate;
+	float flow;
+	float leaked_volume;
 	DistributionNode* head;
 	struct _storage_node* next;
 }StorageNode;

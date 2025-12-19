@@ -26,8 +26,10 @@ StorageNode* createStorageNode(char id[], float leakage_rate){
 	}
 	strcpy(newone->id,id);
 	newone->leakage_rate = leakage_rate;
+    newone->flow = 0;
 	newone->head = NULL;
 	newone->next = NULL;
+    newone->leaked_volume = 0;
 	return newone;
 }
 
@@ -165,3 +167,4 @@ void showAvlStorageInorder(Avl_Storage* root){
         showAvlStorageInorder(root->rs);
     }
 }
+

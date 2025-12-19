@@ -126,11 +126,21 @@ DistributionNode* createDistributionNode(char* phrase){
         exit(1);
     }
     colons = getcolons(phrase);
-    strcpy(newone->id,colons[2]);
-    newone->leakage_rate = atof(colons[4])/100;
-    strcpy(newone->parentid,colons[1]);
+    if (colons[1] != NULL && colons[2] != NULL && colons[3] != NULL && colons[4] != NULL) {
+        strcpy(newone->id,colons[2]);
+        newone->leakage_rate = atof(colons[4])/100;
+        strcpy(newone->parentid,colons[1]);
+    } else {
+        free(newone);
+        freecolons(colons);
+        return NULL;
+    }
     newone->next = NULL;
     newone->head = NULL;
+    newone->flow = 0;
+    newone->leaked_volume = 0;
+    freecolons(colons);
+    return newone;
 }
 
 Avl_Distribution* searchAvlDistributionById(Avl_Distribution* root, char id[]){
