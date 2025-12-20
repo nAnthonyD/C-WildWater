@@ -44,6 +44,15 @@ void testAvlPlantInorder(Avl_Plant* root){
 	}
 }
 
+// This function allows to read the files on windows even if it's much slower
+void normalizeToWindows(char phrase[]){
+	int len = strlen(phrase);
+			if (len && (phrase[len-1] == '\n' || phrase[len-1] == '\r')) {
+				phrase[len-1] = '\0';
+				len--;
+			}
+}
+
 Avl_Plant* getAllPlantsFromFile(FILE* file){
 	Avl_Plant* root = NULL;
 	int count[4] = {0,0,0,0}; //source, usine, stockage, distribution
@@ -57,7 +66,9 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 		rewind(file);
 		char* phrase = malloc(sizeof(char)*200);
 		while (fgets(phrase,199,file) != NULL)
-		{
+		{	
+			
+			normalizeToWindows(phrase);
 			//printf(" %s ",phrase);
 			char type[20];
 			strcpy(type,getlinetype(phrase));
@@ -120,6 +131,7 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 		}
 		while (fgets(phrase,199,file) != NULL)
 		{
+			normalizeToWindows(phrase);
 			colons = getcolons(phrase);
 			char type[20];
 			strcpy(type,getlinetype(phrase));
@@ -189,6 +201,8 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 			planttree = createPlantTree(plant->current);
 			while (fgets(phrase,199,file) != NULL)
 			{
+				normalizeToWindows(phrase);
+				
 				colons = getcolons(phrase);
 				char linetype[20];
 				strcpy(linetype,getlinetype(phrase));
