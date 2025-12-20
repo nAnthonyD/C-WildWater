@@ -9,6 +9,7 @@
  *   H_SRC  : volume total capté
  *   H_REAL : volume réellement traité
  */
+
 typedef enum {
     H_MAX,
     H_SRC,
@@ -26,6 +27,7 @@ typedef enum {
  *   0  → OK
  *   >0 → erreur
  */
+
 int run_histo(const char *csv_path,
               HistoMode mode,
               const char *output_dat_path);
