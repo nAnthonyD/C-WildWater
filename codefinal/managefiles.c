@@ -91,10 +91,10 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 				free(colons[i]);
 			}			
 			free(colons);
-
 		}
 		free(phrase);
 	}
+	
 }
 //Simple function to free a Avl
 void freeAvlPlant(Avl_Plant* root){
@@ -175,7 +175,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root,char* biggestleakageid,char*
 			freePlantTree(planttree);
 		}
 		else{
-			exit(1);
+			return -1.0f;
 		}
 		free(phrase);
 		free(heightchanged);

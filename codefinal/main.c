@@ -19,7 +19,6 @@ int parse_histo_mode(const char* s, HistoMode* out_mode) {
     return 1;
 }
 
-// Main entry point
 int main(int argc, char** argv) {
     if (argc >= 2 && strcmp(argv[1], "-h") == 0) {
         print_usage(argv[0]);
@@ -86,16 +85,16 @@ int main(int argc, char** argv) {
             return 11;
         }
 
-        if (!exists) {
+        if (lost == -1.0f){
+            printf("Error: Invalid Plant Id\n");
+            return -1;
+        }
+         if (!exists) {
             fprintf(out, "Identifier;Leak volume (M.m3./year);Biggest Leak Section;Section Parent;Leak In Section (M.m3/year)\n");
         }
-
         fprintf(out, "%s;%.6f;%s;%s;%.6f,\n", param, lost,biggestleakageid,biggestleak_parent,biggestleakage);
         fclose(out);
         printf("LEAKS %s = %.6f (M.m3)\n", param, lost);
-
-        
-
         return 0;
     }
 }
