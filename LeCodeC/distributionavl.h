@@ -166,3 +166,11 @@ Avl_Distribution* searchAvlDistributionById(Avl_Distribution* root, char id[]){
         }
     }
 }
+
+void freeAvlDistribution(Avl_Distribution* root){
+    if (root != NULL){
+        freeAvlDistribution(root->ls);
+        freeAvlDistribution(root->rs);
+        free(root);
+    }
+}

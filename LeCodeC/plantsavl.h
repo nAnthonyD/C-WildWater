@@ -327,7 +327,7 @@ StorageNode* insertStorageNode(StorageNode* root, DistributionNode* distribution
 	}
 }
 
-void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, float flow, int* preapeat){
+void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, float flow){
 	DistributionNode* currentdist = distnode;
 	int sons = 0;
 	float totalflow = 0;
@@ -337,12 +337,11 @@ void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, fl
 	}
 	currentdist = distnode;
 	while (currentdist != NULL){
-		(*preapeat)++;
 		totalflow = flow/sons;
 		currentdist->flow = totalflow - (totalflow * currentdist->leakage_rate);
 		currentdist->leaked_volume = totalflow * currentdist->leakage_rate;
 		(*ptotalleakage) += currentdist->leaked_volume;
-		browsedistributiontree(currentdist->head,ptotalleakage, currentdist->flow,preapeat);
+		browsedistributiontree(currentdist->head,ptotalleakage, currentdist->flow);
 		currentdist = currentdist->next;
 	}
 }
@@ -358,16 +357,14 @@ void browsestoragetree(StorageNode* storagenode, float* ptotalleakage){
 		sons++;
         currentdist = currentdist->next;
     }
-	int* preapeat = malloc(sizeof(int));
-	*preapeat = 0;
 	currentdist = storagenode->head;
 	//printf(" Leaked volume at storage %s: %f , total leakage so far: %f, realflow: %f, sons: %d\n",storagenode->id,storagenode->leaked_volume,*ptotalleakage, realflow, sons);
-	browsedistributiontree(currentdist,ptotalleakage,realflow,preapeat);
-	free(preapeat);
+	browsedistributiontree(currentdist,ptotalleakage,realflow);
 }
 
 void browseplanttree(PlantTree* planttree, float* ptotalleakage){
 	StorageNode* currentstorage = planttree->head;
+
 	*ptotalleakage = 0;
 	int sons = 0;
 	while (currentstorage != NULL){
@@ -379,5 +376,23 @@ void browseplanttree(PlantTree* planttree, float* ptotalleakage){
 		currentstorage->flow = planttree->root->pro_vol / sons;
 		browsestoragetree(currentstorage,ptotalleakage);
 		currentstorage = currentstorage->next;
+	}
+}
+
+void freePlantTree(PlantTree* planttree){
+	if (planttree != NULL){
+		StorageNode* current = planttree->head;
+		while (current != NULL){
+			StorageNode* next = current->next;
+			DistributionNode* dcurrent = current->head;
+			while (dcurrent != NULL){
+				DistributionNode* dnext = dcurrent->next;
+				free(dcurrent);
+				dcurrent = dnext;
+			}
+			free(current);
+			current = next;
+		}
+		free(planttree);
 	}
 }

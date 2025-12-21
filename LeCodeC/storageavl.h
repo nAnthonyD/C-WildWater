@@ -166,3 +166,11 @@ void showAvlStorageInorder(Avl_Storage* root){
     }
 }
 
+void freeAvlStorage(Avl_Storage* root){
+    if (root != NULL){
+        freeAvlStorage(root->ls);
+        freeAvlStorage(root->rs);
+        free(root);
+    }
+}
+

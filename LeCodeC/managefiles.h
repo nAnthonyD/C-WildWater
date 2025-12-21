@@ -87,11 +87,10 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 			}
 			
 		}
-		char** colons = getcolons(phrase);
 		free(phrase);
+		free(heightchanged);
 		
 	}
-	Avl_Plant* test = searchAvlPlantById(root,"Plant #KV200751J");
 	return root;
 }
 
@@ -134,7 +133,6 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 
 		}
 		free(phrase);
-		Avl_Plant* test = searchAvlPlantById(root,"Module #OS101217V");
 	}
 }
 
@@ -148,13 +146,9 @@ void freeAvlPlant(Avl_Plant* root){
 }
 
 float leakage(char id[],FILE* file, Avl_Plant* root){
-	StorageNode* storagecurrent = malloc(sizeof(StorageNode));
-	DistributionNode* distcurrent = malloc(sizeof(DistributionNode));
-	DistributionNode* distparent = malloc(sizeof(DistributionNode));
-	PlantTree* planttree = malloc (sizeof(PlantTree));
 	Avl_Plant* plant = searchAvlPlantById(root,id);
 	int nmb = 0, nmbr = 0, tst = 0;
-	if (file == NULL || storagecurrent == NULL || distcurrent == NULL || planttree == NULL || distparent == NULL){
+	if (file == NULL){
 		exit(1);
 	}
 	else{
@@ -171,7 +165,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 			exit(1);
 		}
 		if (plant != NULL){
-			planttree = createPlantTree(plant->current);
+			PlantTree* planttree = createPlantTree(plant->current);
 			while (fgets(phrase,199,file) != NULL)
 			{
 				normalizeToWindows(phrase);
@@ -181,7 +175,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 				strcpy(linetype,getlinetype(phrase));
 				if (strcmp(linetype,"stockage") == 0){
 					if (colons[1] != NULL && beforeinorderid(colons[1],id) == 0 && colons[2] != NULL && colons[4] != NULL){
-						storagecurrent = createStorageNode(colons[2],atof(colons[4])/100);
+						StorageNode* storagecurrent = createStorageNode(colons[2],atof(colons[4])/100);
 						planttree = insertPlantTree(planttree,storagecurrent);
 						storageavl = insertAvlStorage(storageavl,storagecurrent,heightchanged);
 						nmb++;
@@ -189,11 +183,11 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 				}
 				else if (strcmp(linetype,"distribution") == 0){
 					if (beforeinorderid(colons[0],id) == 0){
-						distcurrent = createDistributionNode(phrase);
+						DistributionNode* distcurrent = createDistributionNode(phrase);
 						if (distcurrent != NULL) {
 							Avl_Storage* avlstoragecurrent = searchAvlStorageById(storageavl,distcurrent->parentid);
 							if (avlstoragecurrent != NULL){
-								storagecurrent = avlstoragecurrent->current;
+								StorageNode* storagecurrent = avlstoragecurrent->current;
 								insertInStorageNode(storagecurrent,distcurrent);
 								distavl = insertAvlDistribution(distavl,distcurrent,heightchanged);
 							}
@@ -214,9 +208,11 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 				freecolons(colons);
 			}
 			browseplanttree(planttree,ptotalleakage);
+			freeAvlDistribution(distavl);
+			freeAvlStorage(storageavl);
+			freePlantTree(planttree);
 		}
 		else{
-			printf("Plant id %s not found in the tree\n",id);
 			exit(1);
 		}
 		free(phrase);

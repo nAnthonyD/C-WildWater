@@ -63,6 +63,8 @@ int main(int argc, char** argv) {
         
         float lost = leakage((char*)param, f, plants);
 
+        freeAvlPlant(plants);
+
         fclose(f);
 
        
