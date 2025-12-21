@@ -1,4 +1,4 @@
-In order to use the program you must download all files from "codefinal" and "c-wildwater.sh" and put them in the same folder, next from your you must execute the shell file by typing:
+In order to use the program you must download all files from "codefinal", download "c-wildwater.sh" and download "makefile" and put them in the same folder, next from your you must execute the shell file by typing:
 ./[adress of the shell file] [adress of the data file] [action] [parameter]
 typing -h in the action argument will display this:
 
