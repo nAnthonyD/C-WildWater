@@ -245,9 +245,6 @@ Avl_Plant* insertAvlPlant(Avl_Plant* root, Plant* plant,int* heightchanged){
 			*heightchanged = 1;
 		}
 	}
-	if (root->balance > 1 || root->balance < -1){
-		printf("unbalanced tree detected at plant id: %s, %d\n",root->current->id,root->balance);
-	}
 	return root;
 }
 
@@ -268,7 +265,6 @@ StorageNode* linkStorageNode(StorageNode* head, StorageNode* newone){
 
 DistributionNode* linkDistNode(DistributionNode* head, DistributionNode* newone){
 	if (head == NULL){
-		printf("bad head\n");
 		return newone;
 	}
 	else{
@@ -293,7 +289,6 @@ StorageNode* insertInStorageNode(StorageNode* root, DistributionNode* distributi
 
 DistributionNode* insertInDistributionNode(DistributionNode* root, DistributionNode* distribution){
 	if (root == NULL){
-		printf("erro");
 		exit(1);
 	}
 	else{
@@ -354,7 +349,6 @@ void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, fl
 
 void browsestoragetree(StorageNode* storagenode, float* ptotalleakage){
     DistributionNode* currentdist = storagenode->head;
-    printf("Storage id: %s , leakage rate: %f\n",storagenode->id,storagenode->leakage_rate);
 	int sons = 0;
 	float totalflow = storagenode->flow;
 	storagenode->leaked_volume = totalflow * storagenode->leakage_rate;
@@ -369,7 +363,6 @@ void browsestoragetree(StorageNode* storagenode, float* ptotalleakage){
 	currentdist = storagenode->head;
 	//printf(" Leaked volume at storage %s: %f , total leakage so far: %f, realflow: %f, sons: %d\n",storagenode->id,storagenode->leaked_volume,*ptotalleakage, realflow, sons);
 	browsedistributiontree(currentdist,ptotalleakage,realflow,preapeat);
-	printf("\n%d\n",*preapeat);
 	free(preapeat);
 }
 
@@ -381,11 +374,9 @@ void browseplanttree(PlantTree* planttree, float* ptotalleakage){
 		sons++;
 		currentstorage = currentstorage->next;
 	}
-	printf("Plant pro_vol: %f, number of storages: %d\n", planttree->root->pro_vol, sons);
 	currentstorage = planttree->head;
 	while (currentstorage != NULL){
 		currentstorage->flow = planttree->root->pro_vol / sons;
-		printf("Storage %s gets flow: %f\n", currentstorage->id, currentstorage->flow);
 		browsestoragetree(currentstorage,ptotalleakage);
 		currentstorage = currentstorage->next;
 	}

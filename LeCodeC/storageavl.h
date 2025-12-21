@@ -108,7 +108,6 @@ Avl_Storage* insertAvlStorage(Avl_Storage* root, StorageNode* storage, int* heig
         return createAvlStorage(storage);
     }
     else{
-        printf("Inserting storage id: %s\n",storage->id);
         if (beforeinorderid(storage->id,root->current->id) == 1){
             root->ls = insertAvlStorage(root->ls,storage,heightchanged);
             *heightchanged = -1;
@@ -152,7 +151,6 @@ Avl_Storage* searchAvlStorageById(Avl_Storage* root, char id[]){
                 return searchAvlStorageById(root->rs,id);
             }
             else{
-                printf("Error in searchAvlStorageById function\n");
                 return NULL;
                
             }

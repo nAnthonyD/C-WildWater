@@ -165,7 +165,6 @@ Avl_Plant* searchAvlPlantById(Avl_Plant* root, char id[]){
             }
             else{
                 return NULL;
-                printf("Error in searchAvlPlantById function\n");
             }
         }
     }

@@ -72,7 +72,6 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 				//printf("usine detectee\n");
 				Plant* plant = createPlant(phrase);
 				if (strcmp (plant->id,"Plant #GU200349W") == 0){
-					printf("Plant created with id: %s and max capacity: %f\n",plant->id,plant->max_cap);
 				}
 				root = insertAvlPlant(root,plant, heightchanged);
 				count[1]++;
@@ -88,26 +87,11 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 			}
 			
 		}
-		printf("\n%s\n",phrase);
 		char** colons = getcolons(phrase);
-		for(int i = 0; i < 5; i++){
-			printf("\n%s\n",colons[i]);
-		}
 		free(phrase);
 		
 	}
-	testAvlPlantInorder(root);
 	Avl_Plant* test = searchAvlPlantById(root,"Plant #KV200751J");
-	if (test != NULL){
-		
-		printf("Plant found: %s with capacity %f\n",test->current->id,test->current->max_cap);
-		for (int i = 0; i < 4; i++){
-				printf("type: %d , %d\n",i,count[i]);
-			}
-	}
-	else{
-		printf("Plant not found\n");
-	}
 	return root;
 }
 
@@ -151,12 +135,6 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 		}
 		free(phrase);
 		Avl_Plant* test = searchAvlPlantById(root,"Module #OS101217V");
-		if (test != NULL){
-			printf("Max Volume: %f, Collected volume: %f, Processed volume: %f\n",test->current->max_cap,test->current->col_vol,test->current->pro_vol);
-		}
-		else{
-			printf("Plant not found\n");
-		}
 	}
 }
 
@@ -235,15 +213,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 				}
 				freecolons(colons);
 			}
-			printf("\nt\n");
-			
-			showAvlStorageInorder(storageavl);
 			browseplanttree(planttree,ptotalleakage);
-			printf("%d distributions linked to storages\n",nmb - tst);
-			printf("%d distributions linked to distributions\n",tst);
-			printf("%d storages linked to plant %s\n",nmb,id);
-			printf("%d distributions linked to plant %s\n",nmbr,id);
-			printf("Total leakage for plant %s: %f\n",id,*ptotalleakage);
 		}
 		else{
 			printf("Plant id %s not found in the tree\n",id);
