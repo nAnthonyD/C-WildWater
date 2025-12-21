@@ -75,8 +75,7 @@ case $ACTION in
 
     # --- Sort + extraction min/max ---
     if [ "$PARAM" = "all" ]; then
-        # we sort on column 2 (max_cap) -> adapt if you prefer to sort on real (col 4)
-        sort -t";" -k2n "$OUTCSV" > tmp/data_sorted.tmp
+        sort -t";" -k4n "$OUTCSV" > tmp/data_sorted.tmp
 
         head -n 50 tmp/data_sorted.tmp > tmp/data_min.dat
         tail -n 10 tmp/data_sorted.tmp > tmp/data_max.dat
@@ -89,23 +88,23 @@ case $ACTION in
         set style histogram rowstacked
         set style fill solid 1.0 border -1
         set ylabel "Volume (M.m3)"
-        set xlabel "Station"
+        set xlabel "Plant"
         set xtics rotate by -45
         set grid y
         set boxwidth 0.4
         set key outside
 
         set output 'tests/graph_${PARAM}_min.png'
-        set title 'Les 50 plus petites stations (all)'
-        plot 'tmp/data_min.dat' using 2:xtic(1) title 'max - source' lc rgb "green", \
-             '' using 3 title 'source - real' lc rgb "red", \
-             '' using 4 title 'real' lc rgb "blue"
-
+        set title 'The 50 smallest plants (all)'
+        plot 'tmp/data_min.dat' using (column(4)):xtic(1) title 'real' lc rgb "blue", \
+            '' using (column(2)-column(3)) title 'max - source' lc rgb "green", \
+            '' using (column(3)-column(4)) title 'source - real' lc rgb "red"
         set output 'tests/graph_${PARAM}_max.png'
-        set title 'Les 10 plus grandes stations (all)'
-        plot 'tmp/data_max.dat' using 2:xtic(1) title 'max - source' lc rgb "green", \
-             '' using 3 title 'source - real' lc rgb "red", \
-             '' using 4 title 'real' lc rgb "blue"
+        set title 'The 10 biggest plants (all)'
+        plot 'tmp/data_max.dat' using (column(4)):xtic(1) title 'real' lc rgb "blue", \
+             '' using (column(2)-column(3)) title 'max - source' lc rgb "green", \
+            '' using (column(3)-column(4)) title 'source - real' lc rgb "red"
+
 EOF
 
     else
@@ -121,17 +120,17 @@ EOF
         set style data histograms
         set style fill solid 1.0 border -1
         set ylabel "Volume (M.m3)"
-        set xlabel "Station"
+        set xlabel "Plant"
         set xtics rotate by -45
         set grid y
         set boxwidth 0.4
 
         set output 'tests/graph_${PARAM}_min.png'
-        set title 'Les 50 plus petites stations ($PARAM)'
+        set title 'The 50 smallest plants ($PARAM)'
         plot 'tmp/data_min.dat' using 2:xtic(1) notitle linecolor rgb "blue"
 
         set output 'tests/graph_${PARAM}_max.png'
-        set title 'Les 10 plus grandes stations ($PARAM)'
+        set title 'The 10 biggest plants ($PARAM)'
         plot 'tmp/data_max.dat' using 2:xtic(1) notitle linecolor rgb "red"
 EOF
     fi
