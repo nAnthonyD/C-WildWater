@@ -1,6 +1,6 @@
 #include "avls.h"
 
-// From plantsavl.c
+// Parses a CSV line to create a Plant structure, extracting id and max capacity
 Plant* createPlant(char string[]){
 	Plant* newone = malloc(sizeof(Plant));
 	if (newone == NULL){
@@ -50,6 +50,7 @@ Avl_Plant* createAvlPlant(Plant* plant){
 	return newone;
 }
 
+//simple avl manipulation functions
 Avl_Plant* rotateLeft(Avl_Plant* a) {
     Avl_Plant* pivot = a->rs;
     a->rs = pivot->ls;
@@ -136,7 +137,7 @@ Avl_Plant* insertAvlPlant(Avl_Plant* root, Plant* plant,int* heightchanged){
 	return root;
 }
 
-
+// Links a StorageNode to the end of a linked list
 StorageNode* linkStorageNode(StorageNode* head, StorageNode* newone){
 	if (head == NULL){
 		return newone;
@@ -151,6 +152,7 @@ StorageNode* linkStorageNode(StorageNode* head, StorageNode* newone){
 	}
 }
 
+// Links a DistributionNode to the end of a linked list
 DistributionNode* linkDistNode(DistributionNode* head, DistributionNode* newone){
 	if (head == NULL){
 		return newone;
@@ -165,6 +167,7 @@ DistributionNode* linkDistNode(DistributionNode* head, DistributionNode* newone)
 	}
 }
 
+// Adds a distribution node as a child of a storage node
 StorageNode* insertInStorageNode(StorageNode* root, DistributionNode* distribution){
 	if (root == NULL){
 		exit(1);
@@ -175,6 +178,7 @@ StorageNode* insertInStorageNode(StorageNode* root, DistributionNode* distributi
 	}
 }
 
+// Adds a distribution node as a child of another distribution node
 DistributionNode* insertInDistributionNode(DistributionNode* root, DistributionNode* distribution){
 	if (root == NULL){
 		exit(1);
@@ -185,6 +189,7 @@ DistributionNode* insertInDistributionNode(DistributionNode* root, DistributionN
 	}
 }
 
+// Creates a PlantTree structure for a plant
 PlantTree* createPlantTree(Plant* plant){
 	PlantTree* newone = malloc(sizeof(PlantTree));
 	if (newone == NULL){
@@ -195,6 +200,7 @@ PlantTree* createPlantTree(Plant* plant){
 	return newone;
 }
 
+// Adds a storage node to the plant tree
 PlantTree* insertPlantTree(PlantTree* root, StorageNode* storage){
 	if (root == NULL){
 		exit(1);
@@ -214,6 +220,8 @@ StorageNode* insertStorageNode(StorageNode* root, DistributionNode* distribution
 		return root;
 	}
 }
+
+/* the next 3 functions basically browse a plant's tree in oder to calculate the total leakeage*/
 
 void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, float flow, char biggestleakageid[], char biggestleak_parent[], float* biggestleakage){
 	DistributionNode* currentdist = distnode;
@@ -239,6 +247,7 @@ void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, fl
 	}
 }
 
+// Browses storage tree to calculate leakage for storage and its distributions
 void browsestoragetree(StorageNode* storagenode, float* ptotalleakage, char biggestleakageid[], char biggestleak_parent[], float* biggestleakage){
     DistributionNode* currentdist = storagenode->head;
 	int sons = 0;
@@ -256,10 +265,10 @@ void browsestoragetree(StorageNode* storagenode, float* ptotalleakage, char bigg
         currentdist = currentdist->next;
     }
 	currentdist = storagenode->head;
-	//printf(" Leaked volume at storage %s: %f , total leakage so far: %f, realflow: %f, sons: %d\n",storagenode->id,storagenode->leaked_volume,*ptotalleakage, realflow, sons);
 	browsedistributiontree(currentdist,ptotalleakage,realflow,biggestleakageid,biggestleak_parent,biggestleakage);
 }
 
+// Browses the entire plant tree to calculate total leakage and find biggest leak
 void browseplanttree(PlantTree* planttree, float* ptotalleakage, char biggestleakageid[], char biggestleak_parent[], float* biggestleakage){
 	StorageNode* currentstorage = planttree->head;
 	*biggestleakage = -1;
@@ -281,6 +290,7 @@ void browseplanttree(PlantTree* planttree, float* ptotalleakage, char biggestlea
 	}
 }
 
+// Frees the entire plant tree structure
 void freePlantTree(PlantTree* planttree){
 	if (planttree != NULL){
 		StorageNode* current = planttree->head;
@@ -299,7 +309,6 @@ void freePlantTree(PlantTree* planttree){
 	}
 }
 
-// From storageavl.c
 StorageNode* createStorageNode(char id[], float leakage_rate){
 	StorageNode* newone = malloc(sizeof(StorageNode));
 	if (newone == NULL){
@@ -314,7 +323,7 @@ StorageNode* createStorageNode(char id[], float leakage_rate){
 	return newone;
 }
 
-
+/* The next functions are just the same avl functions but with other types*/
 Avl_Storage* createAvlStorage(StorageNode* storage){
     Avl_Storage* newone = malloc(sizeof(Avl_Storage));
     if (newone == NULL){
@@ -455,7 +464,6 @@ void freeAvlStorage(Avl_Storage* root){
     }
 }
 
-// From distributionavl.c
 Avl_Distribution* createAvlDistribution(DistributionNode* distribution){
     Avl_Distribution* newone = malloc(sizeof(Avl_Distribution));
     if (newone == NULL){

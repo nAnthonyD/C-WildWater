@@ -6,7 +6,8 @@
 #include<time.h>
 #define STDIO
 #endif
-
+//defines every structure that will be used in the code
+//basic structure that represents a plant
 typedef struct _plant{
 	float max_cap;
 	float col_vol;
@@ -14,6 +15,7 @@ typedef struct _plant{
 	char id[40];
 }Plant;
 
+//represents a distribution inside a linked list
 typedef struct _distribution_node{
     struct _distribution_node* head;
 	struct _distribution_node* next;
@@ -24,6 +26,7 @@ typedef struct _distribution_node{
     char parentid[40];
 }DistributionNode;
 
+//represents a storage inside a linked list
 typedef struct _storage_node{
 	DistributionNode* head;
 	struct _storage_node* next;
@@ -33,25 +36,13 @@ typedef struct _storage_node{
 	char id[40];
 }StorageNode;
 
+//A plant's classical tree that has storage nodes as children
 typedef struct _plant_tree{
 	Plant* root;
 	StorageNode* head;
 }PlantTree;
 
-typedef struct node_avl{
-    float val1; //Plant: Max Capacity, Storage: leakage rate, Distribution: leakage rate
-    float val2; //Plant: Collected Volume, Storage: unused, Distribution: unused
-    float val3; //Plant: Processed Volume, Storage: unused, Distribution: unused
-    char id[40]; 
-}Node_Avl;
-
-typedef struct _avl{
-    int balance;
-    void* current;
-    void* ls;
-    void* rs;
-}Avl;
-
+//The diferent types of avls
 typedef struct _distribution_avl{
 	int balance;
 	DistributionNode* current;

@@ -9,7 +9,6 @@
 #include<time.h>
 
 #define STDIO
-//#define FICHIER "c-wildwater_v0(1).dat"
 #endif
 
 #ifndef STRUCTURES

@@ -1,23 +1,6 @@
 #include "managefiles.h"
 
-void testAvlPlantInorder(Avl_Plant* root){
-	Avl_Plant* test;
-	if (root != NULL){
-
-		testAvlPlantInorder(root->ls);
-		test = searchAvlPlantById(root,root->current->id);
-		if (test == NULL){
-			printf("not found, id = %s\n",root->current->id);
-		}
-		//printf("Plant id: %s , max capacity: %f\n",root->current->id,root->current->max_cap);
-		testAvlPlantInorder(root->rs);
-	}
-}
-
-/* This function allows to read the files on windows even if it's much slower.
-   It removes the \r or \n at the end of the string if present, so fgets will reach the next line
-   even on windows.
-*/
+// Normalizes line endings for Windows compatibility
 void normalizeToWindows(char phrase[]){
 	int len = strlen(phrase);
 			if (len && (phrase[len-1] == '\n' || phrase[len-1] == '\r')) {
@@ -26,6 +9,8 @@ void normalizeToWindows(char phrase[]){
 			}
 }
 
+/* function that reads every line of file the to create the Plant's Avl
+*/
 Avl_Plant* getAllPlantsFromFile(FILE* file){
 	Avl_Plant* root = NULL;
 	int count[4] = {0,0,0,0};
@@ -42,11 +27,9 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 		{	
 			
 			normalizeToWindows(phrase);
-			//printf(" %s ",phrase);
 			char type[20];
 			strcpy(type,getlinetype(phrase));
-			if (strcmp(type,"usine") == 0){
-				//printf("usine detectee\n");
+			if (strcmp(type,"plant") == 0){
 				Plant* plant = createPlant(phrase);
 				if (strcmp (plant->id,"Plant #GU200349W") == 0){
 				}
@@ -56,7 +39,7 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 			if (strcmp(type,"source") == 0){
 				count[0]++;
 			}
-			if (strcmp(type,"stockage") == 0){
+			if (strcmp(type,"storage") == 0){
 				count[2]++;
 			}
 			if (strcmp(type,"distribution") == 0){
@@ -71,6 +54,7 @@ Avl_Plant* getAllPlantsFromFile(FILE* file){
 	return root;
 }
 
+/* function that once more reads the file to get the storage*/
 void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){	
 	if (file == NULL){
 		exit(1);
@@ -112,7 +96,7 @@ void getPlantColAndProcVolume(FILE* file, Avl_Plant* root){
 		free(phrase);
 	}
 }
-
+//Simple function to free a Avl
 void freeAvlPlant(Avl_Plant* root){
 	if (root != NULL){
 		freeAvlPlant(root->ls);
@@ -121,7 +105,8 @@ void freeAvlPlant(Avl_Plant* root){
 		free(root);
 	}
 }
-
+/* Once more reads the full file to create the "Water distribution" tree
+*/
 float leakage(char id[],FILE* file, Avl_Plant* root,char* biggestleakageid,char* biggestleak_parent,float* biggestleakage){
 	Avl_Plant* plant = searchAvlPlantById(root,id);
 	int nmb = 0, nmbr = 0, tst = 0;
@@ -150,7 +135,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root,char* biggestleakageid,char*
 				colons = getcolons(phrase);
 				char linetype[20];
 				strcpy(linetype,getlinetype(phrase));
-				if (strcmp(linetype,"stockage") == 0){
+				if (strcmp(linetype,"storage") == 0){
 					if (colons[1] != NULL && beforeinorderid(colons[1],id) == 0 && colons[2] != NULL && colons[4] != NULL){
 						StorageNode* storagecurrent = createStorageNode(colons[2],atof(colons[4])/100);
 						planttree = insertPlantTree(planttree,storagecurrent);

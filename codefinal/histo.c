@@ -1,5 +1,6 @@
 #include "histo.h"
 
+// Counts the number of nodes in the AVL tree
 int count_nodes(Avl_Plant* root){
 
 	if(root == NULL){
@@ -8,8 +9,8 @@ int count_nodes(Avl_Plant* root){
 	return 1 + count_nodes(root->ls) + count_nodes(root->rs);
 	}
 	
-	
 
+// Converts AVL tree to array in descending order
 void avl_to_tab_desc(const Avl_Plant* root, Plant* tab, int* index) {
     if (root == NULL) return;
 
@@ -21,9 +22,7 @@ void avl_to_tab_desc(const Avl_Plant* root, Plant* tab, int* index) {
     avl_to_tab_desc(root->ls, tab, index);
 }
 
-
-	
-
+// Writes histogram data to a DAT file based on mode
 int write_dat_file(const char* path, const Plant* tab, int n, HistoMode mode) {
     FILE* f = fopen(path, "w");
     if (f == NULL) {
@@ -65,7 +64,7 @@ int write_dat_file(const char* path, const Plant* tab, int n, HistoMode mode) {
     return 0;
 }
 
-
+// Main function to run histogram generation from CSV
 int run_histo(const char* csv_path, HistoMode mode, const char* output_dat_path) {
     FILE* file = fopen(csv_path, "r");
     if (!file) {

@@ -1,5 +1,6 @@
 #include "utils.h"
 
+//min and max functions
 int max(int a, int b){
 	if (a >= b){
 		return a;
@@ -18,6 +19,8 @@ int min(int a, int b){
 	}
 }
 
+/* function that receives a string and return multiple strings where each one contains one colon
+from the string */
 char** getcolons(char string[]){
 	char** colons = malloc (sizeof(char*)*5);
 	char buffer[200];
@@ -38,10 +41,10 @@ char** getcolons(char string[]){
 			strcpy(colons[i],ptr);
 		}
 	}
-	//free(ptr);
 	return colons;
 }
 
+//simple function to easily free the colons
 void freecolons(char** colons){
     for (int i = 0; i < 5;i++){
         free(colons[i]);
@@ -49,6 +52,7 @@ void freecolons(char** colons){
     free(colons);
 }
 
+// Compares two IDs for AVL ordering based on the part after '#'
 int beforeinorderid(char str1[], char str2[]){
 	int pos1 = 0,pos2 = 0;
 	int difference = 0;
@@ -71,24 +75,9 @@ int beforeinorderid(char str1[], char str2[]){
 		}
 	}
 	return 0;
-	/*while(str1[pos] != '\0' && str2[pos] != '\0'){
-		if (str1[pos] < str2[pos]){
-			return 1;
-		}
-		else if (str1[pos] > str2[pos]){
-			return 0;
-		}
-		pos++;
-	}
-	if (str1[pos] == '\0' && str2[pos] != '\0'){
-		return 1;
-	}
-	else{
-		return 0;
-	}*/
 }
 
-
+// Determines the type of line (plant, source, storage, distribution) from CSV
 char* getlinetype(char string[]){
 	char** colons = malloc (sizeof(char*)*5);
 	colons = getcolons(string);
@@ -117,13 +106,13 @@ char* getlinetype(char string[]){
 		//createPlant(string);
 		for(int i=0; i<5; i++) if(colons[i]) free(colons[i]);
 		free(colons);
-		return "usine";
+		return "plant";
 	}
 	else if (valsvide[0] == 1 && valsvide[1] == 0 && valsvide[2] == 0
 	&& valsvide[3] == 1 && valsvide[4] == 0){
 		for(int i=0; i<5; i++) if(colons[i]) free(colons[i]);
 		free(colons);
-		return "stockage";
+		return "storage";
 	}
 	else {
 		for(int i=0; i<5; i++) if(colons[i]) free(colons[i]);
@@ -132,7 +121,7 @@ char* getlinetype(char string[]){
 	}
 }
 
-
+// Searches for a Plant by ID in the AVL tree
 Avl_Plant* searchAvlPlantById(Avl_Plant* root, char id[]){
 	if (root == NULL){
 		return NULL;

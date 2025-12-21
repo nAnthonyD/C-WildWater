@@ -35,7 +35,6 @@ StorageNode* insertInStorageNode(StorageNode* root, DistributionNode* distributi
 DistributionNode* insertInDistributionNode(DistributionNode* root, DistributionNode* distribution);
 PlantTree* createPlantTree(Plant* plant);
 PlantTree* insertPlantTree(PlantTree* root, StorageNode* storage);
-StorageNode* insertStorageNode(StorageNode* root, DistributionNode* distribution);
 void browsedistributiontree(DistributionNode* distnode, float* ptotalleakage, float flow, char biggestleakageid[], char biggestleak_parent[], float* biggestleakage);
 void browsestoragetree(StorageNode* storagenode, float* ptotalleakage, char biggestleakageid[], char biggestleak_parent[], float* biggestleakage);
 void browseplanttree(PlantTree* planttree, float* ptotalleakage, char biggestleakageid[], char biggestleak_parent[], float* biggestleakage);
