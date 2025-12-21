@@ -68,10 +68,7 @@ case $ACTION in
         head -n 50 tmp/data_sorted.tmp > tmp/data_min.dat
         tail -n 10 tmp/data_sorted.tmp > tmp/data_max.dat
 
-        # --- Modifications Gnuplot ---
-        # 1. size 1200,600 : On élargit l'image pour que les 50 barres soient moins serrées
-        # 2. font "arial,10" : On réduit la police (standard est souvent 12)
-        # 3. boxwidth 0.4 : On réduit la largeur des barres pour espacer les éléments
+        
         gnuplot << EOF
         set terminal png size 1200,600 font "arial,10"
         set datafile separator ";"
