@@ -28,7 +28,6 @@ if [ ! -f "$FICHIER" ]; then
     exit 1
 fi
 
-# Compilation si nécessaire
 if [ -f "Makefile" ]; then
     if [ ! -x "$EXECUTABLE" ]; then
         echo "Compilation en cours..."
@@ -44,7 +43,6 @@ else
     exit 1
 fi
 
-# Nettoyage et création des dossiers temporaires
 rm -rf tmp && mkdir tmp
 [ ! -d "tests" ] && mkdir tests
 
@@ -65,15 +63,17 @@ case $ACTION in
             exit 2
         fi
         
-        # Tri numérique pour extraire les données selon la consigne v1.1
         sort -t";" -k2n data.csv > tmp/data_sorted.tmp
 
-        # Extraction : 50 plus petites et 10 plus grandes stations
         head -n 50 tmp/data_sorted.tmp > tmp/data_min.dat
         tail -n 10 tmp/data_sorted.tmp > tmp/data_max.dat
 
+        # --- Modifications Gnuplot ---
+        # 1. size 1200,600 : On élargit l'image pour que les 50 barres soient moins serrées
+        # 2. font "arial,10" : On réduit la police (standard est souvent 12)
+        # 3. boxwidth 0.4 : On réduit la largeur des barres pour espacer les éléments
         gnuplot << EOF
-        set terminal png size 1000,600
+        set terminal png size 1200,600 font "arial,10"
         set datafile separator ";"
         set style data histograms
         set style fill solid 1.0 border -1
@@ -81,14 +81,14 @@ case $ACTION in
         set xlabel "Station"
         set xtics rotate by -45
         set grid y
-
+        set boxwidth 0.4
+        
         set output 'tests/graph_${PARAM}_min.png'
         set title 'Les 50 plus petites stations ($PARAM)'
         plot 'tmp/data_min.dat' using 2:xtic(1) notitle linecolor rgb "blue"
 
         set output 'tests/graph_${PARAM}_max.png'
         set title 'Les 10 plus grandes stations ($PARAM)'
-        set boxwidth 0.5
         plot 'tmp/data_max.dat' using 2:xtic(1) notitle linecolor rgb "red"
 EOF
         echo "Graphiques générés dans 'tests/'."
@@ -118,6 +118,5 @@ esac
 
 FIN=$(date +%s)
 DUREE=$((FIN - DEBUT))
-# Conversion en millisecondes pour respecter la consigne v1.1
 echo "Durée totale : $((DUREE * 1000)) millisecondes."
 exit 0
