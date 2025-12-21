@@ -48,7 +48,7 @@ fi
 rm -rf tmp && mkdir tmp
 [ ! -d "tests" ] && mkdir tests
 
-DEBUT=$(date +%s)
+DEBUT=$(date +%s%3N)
 
 case $ACTION in
     "histo")
@@ -124,8 +124,8 @@ EOF
         ;;
 esac
 
-FIN=$(date +%s)
+FIN=$(date +%s%3N)
 DUREE=$((FIN - DEBUT))
 # Conversion en millisecondes pour respecter la consigne v1.1
-echo "Durée totale : $((DUREE * 1000)) millisecondes."
+echo "Durée totale : $((DUREE)) millisecondes."
 exit 0
