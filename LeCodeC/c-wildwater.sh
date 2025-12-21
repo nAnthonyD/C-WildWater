@@ -79,8 +79,9 @@ case $ACTION in
         set style fill solid 1.0 border -1
         set ylabel "Volume (m3)"
         set xlabel "Station"
-        set xtics rotate by -45
+        set xtics rotate by -45 font ",8"
         set grid y
+        set boxwidth 0.7
 
         set output 'tests/graph_${PARAM}_min.png'
         set title 'Les 50 plus petites stations ($PARAM)'
@@ -88,7 +89,6 @@ case $ACTION in
 
         set output 'tests/graph_${PARAM}_max.png'
         set title 'Les 10 plus grandes stations ($PARAM)'
-        set boxwidth 0.5
         plot 'tmp/data_max.dat' using 2:xtic(1) notitle linecolor rgb "red"
 EOF
         echo "Graphiques générés dans 'tests/'."
