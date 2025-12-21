@@ -22,13 +22,8 @@ The four possible parameters of histo will create a csv file and two png files.
   real generates:
     Csv file in reverse alphabetical order that contains every plant's treated water volume.
     Png file that contains the 10 plants with the most treated water.
-    Png file that contains the 50 plants with the least treated water.   
-
-  src generates:
-    Csv file in reverse alphabetical order that contains every plant's collected water volume.
-    Png file that contains the 10 plants with the most collected water.
-    Png file that contains the 50 plants with the least collected water.
-
+    Png file that contains the 50 plants with the least treated water.  
+    
   all generates:
     Csv file in reverse alphabetical order that contains every plant's maximun, collected and treated water volume.
     Png file that contains the 10 plants with the biggest volume of treated water.
