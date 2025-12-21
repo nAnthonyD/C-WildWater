@@ -31,13 +31,13 @@ int write_dat_file(const char* path, const Plant* tab, int n, HistoMode mode) {
         return 1;
     }
 
-    if (mode == H_MAX)  fprintf(f, "Identifier;Max volume (k.m3.year-1)\n");
-    if (mode == H_SRC)  fprintf(f, "Identifier;Captured volume (k.m3.year-1)\n");
-    if (mode == H_REAL) fprintf(f, "Identifier;Real treated volume (k.m3.year-1)\n");
+    if (mode == H_MAX)  fprintf(f, "Identifier;Max volume (M.m3/year)\n");
+    if (mode == H_SRC)  fprintf(f, "Identifier;Collected volume (M.m3/year)\n");
+    if (mode == H_REAL) fprintf(f, "Identifier;Processed volume (M.m3/year)\n");
 
 
     if (mode == H_ALL) {
-        fprintf(f, "Identifier;Real treated (k.m3.year-1);Lost after capture (k.m3.year-1);Remaining possible (k.m3.year-1)\n");
+        fprintf(f, "Identifier;Max Capacity (M.m3/year);Collected Volume (M.m3/year);Processed Volume (M.m3/year)\n");
     }
 
     for (int i = 0; i < n; i++) {
@@ -50,15 +50,14 @@ int write_dat_file(const char* path, const Plant* tab, int n, HistoMode mode) {
         }
         else {
 
-            float real = tab[i].pro_vol;
-            float lost = tab[i].col_vol - tab[i].pro_vol;
-            float remaining = tab[i].max_cap - tab[i].col_vol;
+            float collected = tab[i].col_vol;
+            float max = tab[i].max_cap;
+            float processed = tab[i].pro_vol;
+            if (max < 0) max = 0;
+            if (processed < 0) processed = 0;
+            if (collected < 0) collected = 0;
 
-            if (lost < 0) lost = 0;
-            if (remaining < 0) remaining = 0;
-            if (real < 0) real = 0;
-
-            fprintf(f, "%s;%.3f;%.3f;%.3f\n", tab[i].id, real, lost, remaining);
+            fprintf(f, "%s;%.3f;%.3f;%.3f\n", tab[i].id, max, collected, processed);
         }
     }
 

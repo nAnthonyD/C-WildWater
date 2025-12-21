@@ -46,7 +46,7 @@ fi
 rm -rf tmp && mkdir tmp
 [ ! -d "tests" ] && mkdir tests
 
-DEBUT=$(date +%s)
+DEBUT=$(date +%s%3N)
 
 case $ACTION in
     "histo")
@@ -88,7 +88,7 @@ case $ACTION in
         set style data histograms
         set style histogram rowstacked
         set style fill solid 1.0 border -1
-        set ylabel "Volume (m3)"
+        set ylabel "Volume (M.m3)"
         set xlabel "Station"
         set xtics rotate by -45
         set grid y
@@ -120,7 +120,7 @@ EOF
         set datafile separator ";"
         set style data histograms
         set style fill solid 1.0 border -1
-        set ylabel "Volume (m3)"
+        set ylabel "Volume (M.m3)"
         set xlabel "Station"
         set xtics rotate by -45
         set grid y
@@ -162,7 +162,7 @@ EOF
         ;;
 esac
 
-FIN=$(date +%s)
+FIN=$(date +%s%3N)
 DUREE=$((FIN - DEBUT))
-echo "Durée totale : $((DUREE * 1000)) millisecondes."
+echo "Durée totale : $((DUREE)) millisecondes."
 exit 0

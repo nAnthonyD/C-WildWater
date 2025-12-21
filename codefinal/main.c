@@ -84,12 +84,11 @@ int main(int argc, char** argv) {
         }
 
         if (!exists) {
-            fprintf(out, "Identifier;Leak volume (M.m3.year-1)\n");
+            fprintf(out, "Identifier;Leak volume (M.m3./year);Biggest Leak Section;Section Parent;Leak In Section (M.m3/year)\n");
         }
 
-        fprintf(out, "%s;%.6f\n", param, lost);
+        fprintf(out, "%s;%.6f;%s;%s;%.6f,\n", param, lost,biggestleakageid,biggestleak_parent,biggestleakage);
         fclose(out);
-
         printf("LEAKS %s = %.6f (M.m3)\n", param, lost);
 
         
