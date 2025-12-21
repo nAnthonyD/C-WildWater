@@ -24,7 +24,6 @@
 #include "distributionavl.h"
 
 void testAvlPlantInorder(Avl_Plant* root){
-	char id[40];
 	Avl_Plant* test;
 	if (root != NULL){
 
@@ -186,7 +185,6 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 		Avl_Storage* storageavl = NULL;
 		Avl_Distribution* distavl = NULL;
 		char** colons;
-		float leakage_rate = -1.0;
 		int* heightchanged = malloc(sizeof(int));
 		*heightchanged = 0;
 		float totalleakage = 0;
@@ -214,7 +212,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 				else if (strcmp(linetype,"distribution") == 0){
 					if (beforeinorderid(colons[0],id) == 0){
 						distcurrent = createDistributionNode(phrase);
-						if (distcurrent != NULL && distcurrent->parentid != NULL) {
+						if (distcurrent != NULL) {
 							Avl_Storage* avlstoragecurrent = searchAvlStorageById(storageavl,distcurrent->parentid);
 							if (avlstoragecurrent != NULL){
 								storagecurrent = avlstoragecurrent->current;

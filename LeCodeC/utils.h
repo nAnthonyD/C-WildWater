@@ -104,7 +104,6 @@ int beforeinorderid(char str1[], char str2[]){
 
 
 char* getlinetype(char string[]){
-	int pos = 0;
 	char** colons = malloc (sizeof(char*)*5);
 	colons = getcolons(string);
 	int valsvide[5];

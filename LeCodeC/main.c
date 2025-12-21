@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
             return 10;
         }
 
-        
+        printf("Calculating leaks for plant ID: %s\n", param);
         Avl_Plant* plants = getAllPlantsFromFile(f);
 
        
