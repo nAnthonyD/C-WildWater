@@ -145,7 +145,7 @@ void freeAvlPlant(Avl_Plant* root){
 	}
 }
 
-float leakage(char id[],FILE* file, Avl_Plant* root){
+float leakage(char id[],FILE* file, Avl_Plant* root,char* biggestleakageid,char* biggestleak_parent,float* biggestleakage){
 	Avl_Plant* plant = searchAvlPlantById(root,id);
 	int nmb = 0, nmbr = 0, tst = 0;
 	if (file == NULL){
@@ -207,7 +207,7 @@ float leakage(char id[],FILE* file, Avl_Plant* root){
 				}
 				freecolons(colons);
 			}
-			browseplanttree(planttree,ptotalleakage);
+			browseplanttree(planttree,ptotalleakage,biggestleakageid,biggestleak_parent,biggestleakage);
 			freeAvlDistribution(distavl);
 			freeAvlStorage(storageavl);
 			freePlantTree(planttree);

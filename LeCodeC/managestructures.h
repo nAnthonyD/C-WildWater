@@ -8,29 +8,29 @@
 #endif
 
 typedef struct _plant{
-	char id[40];
 	float max_cap;
 	float col_vol;
 	float pro_vol;
+	char id[40];
 }Plant;
 
 typedef struct _distribution_node{
-	char id[40];
-    char parentid[40];
+    struct _distribution_node* head;
+	struct _distribution_node* next;
 	float leakage_rate;
 	float flow;
 	float leaked_volume;
-    struct _distribution_node* head;
-	struct _distribution_node* next;
+	char id[40];
+    char parentid[40];
 }DistributionNode;
 
 typedef struct _storage_node{
-	char id[40];
+	DistributionNode* head;
+	struct _storage_node* next;
 	float leakage_rate;
 	float flow;
 	float leaked_volume;
-	DistributionNode* head;
-	struct _storage_node* next;
+	char id[40];
 }StorageNode;
 
 typedef struct _plant_tree{
@@ -39,36 +39,36 @@ typedef struct _plant_tree{
 }PlantTree;
 
 typedef struct node_avl{
-    char id[40]; 
     float val1; //Plant: Max Capacity, Storage: leakage rate, Distribution: leakage rate
     float val2; //Plant: Collected Volume, Storage: unused, Distribution: unused
     float val3; //Plant: Processed Volume, Storage: unused, Distribution: unused
+    char id[40]; 
 }Node_Avl;
 
 typedef struct _avl{
+    int balance;
     void* current;
     void* ls;
     void* rs;
-    int balance;
 }Avl;
 
 typedef struct _distribution_avl{
+	int balance;
 	DistributionNode* current;
 	struct _distribution_avl* ls;
 	struct _distribution_avl* rs;
-	int balance;
 }Avl_Distribution;
 
 typedef struct _storage_avl{
+	int balance;
 	StorageNode* current;
 	struct _storage_avl* ls;
 	struct _storage_avl* rs;
-	int balance;
 }Avl_Storage;
 
 typedef struct _avl_plant{
+	int balance;
 	Plant* current;
 	struct _avl_plant* ls;
 	struct _avl_plant* rs;
-	int balance;
 }Avl_Plant;

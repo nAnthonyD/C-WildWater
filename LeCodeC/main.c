@@ -53,7 +53,9 @@ int main(int argc, char** argv) {
             fprintf(stderr, "Erreur: impossible d'ouvrir '%s'\n", csv_path);
             return 10;
         }
-
+        char biggestleakageid[40];
+        char biggestleak_parent[40];
+        float biggestleakage;
         printf("Calculating leaks for plant ID: %s\n", param);
         Avl_Plant* plants = getAllPlantsFromFile(f);
 
@@ -61,8 +63,7 @@ int main(int argc, char** argv) {
         getPlantColAndProcVolume(f, plants);
 
         
-        float lost = leakage((char*)param, f, plants);
-
+        float lost = leakage((char*)param, f, plants, biggestleakageid, biggestleak_parent, &biggestleakage);
         freeAvlPlant(plants);
 
         fclose(f);
