@@ -28,6 +28,10 @@ if [ ! -f "$FILE" ]; then
     exit 1
 fi
 
+if [ -f "Makefile.txt" ]; then
+    mv "Makefile.txt" "Makefile"
+fi
+
 if [ -f "Makefile" ]; then
     if [ ! -x "$EXECUTABLE" ]; then
         echo "Compilation in progress..."
